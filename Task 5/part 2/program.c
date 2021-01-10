@@ -9,9 +9,9 @@ int num = 1;
 int delay_ms = -1;
 
 interrupt [TIM0_OVF] void timer0_ovf_isr(void){
-    TCNT0=0x0C;
+    TCNT0 = 0x0C;
 
-    if(PINC.2 == 0){
+    if(buttonPressed == 1){
       delay_ms++;
       if(delay_ms  ==  0){
         switch(num){
@@ -53,6 +53,7 @@ interrupt [TIM0_OVF] void timer0_ovf_isr(void){
         num++;
         if(num == 5){
           num = 1;
+          buttonPressed = 0;
         }
       } 
     }
@@ -74,6 +75,10 @@ void main(void){
 
   #asm("sei")
 
-  while (1) {
+  while (1){
+    if(buttonPressed == 0 && PINC == 0x00){
+      buttonPressed = 1; 
+      delay_ms = -1;
+    }
   }
 }
